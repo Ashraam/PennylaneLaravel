@@ -2,7 +2,9 @@
 
 namespace Ashraam\PennylaneLaravel;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use Ashraam\PennylaneLaravel\PennylaneLaravel;
 
 class PennylaneLaravelServiceProvider extends ServiceProvider
 {
@@ -52,7 +54,7 @@ class PennylaneLaravelServiceProvider extends ServiceProvider
         // Automatically apply the package configuration
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'pennylane-laravel');
 
-        $client = new \GuzzleHttp\Client([
+        $client = new Client([
             'base_uri' => config('pennylane-laravel.endpoint'),
             'headers' => [
                 "Authorization" => "Bearer ".config('pennylane-laravel.key')
@@ -60,7 +62,7 @@ class PennylaneLaravelServiceProvider extends ServiceProvider
         ]);
 
         // Register the main class to use with the facade
-        $this->app->singleton('pennylane-laravel', function () use ($client) {
+        $this->app->singleton(PennylaneLaravel::class, function () use ($client) {
             return new PennylaneLaravel($client);
         });
     }
